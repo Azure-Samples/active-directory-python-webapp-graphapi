@@ -103,7 +103,7 @@ Run app.py from shell or command line:
 python app.py
 ```
 
-Follow the sign in process to complete the logging.
+Follow the sign-in process to complete the logging.
 
 ## About the code
 
