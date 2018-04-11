@@ -28,16 +28,19 @@ The `Configure.ps1` will stop if it tries to create an Azure AD application whic
 
 To use the app creation scripts:
 
-1. Open PowerShell as admin (On Windows, Search `Powershell` in the search bar, right click on it and select `Run as administrator`).
+1. Open PowerShell (On Windows, press  `Windows-R` and type `PowerShell` in the search window)
 2. Navigate to the root directory of the project.
 3. Until you change it, the default Execution Policy for scripts is usually `Restricted`. In order to run the PowerShell script you need to set the Execution Policy to `Unrestricted`. You can set this just for the current PowerShell process by running the command:
     ```PowerShell
     Set-ExecutionPolicy -Scope Process -ExecutionPolicy Unrestricted
     ```
-4. If you have never done it already, in the PowerShell window, install the AzureAD PowerShell modules. For this, type:
-    ```PowerShell
-    Install-Module AzureAD
-    ```
+4. If you have never done it already, in the PowerShell window, install the AzureAD PowerShell modules. For this:
+
+   1. Open PowerShell as admin (On Windows, Search Powershell in the search bar, right click on it and select Run as administrator).
+   2. Type:
+        ```PowerShell
+        Install-Module AzureAD
+        ```
 5. Go to the `AppCreationScripts` sub-folder. From the folder where you cloned the repo,
     ```PowerShell
     cd AppCreationScripts
