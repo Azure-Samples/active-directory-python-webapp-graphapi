@@ -36,7 +36,7 @@ To run this sample, you'll need:
 
 From your shell or command line:
 
-`git clone https://github.com/Azure-Samples/active-directory-python-webapp-graphapi `
+`git clone https://github.com/Azure-Samples/active-directory-python-webapp-graphapi`
 
 > Given that the name of the sample is pretty long, you might want to clone it in a folder close to the root of your hard drive, to avoid file size limitations on Windows.
 
@@ -60,7 +60,7 @@ As a first step you'll need to:
 1. Click on **All services** in the left-hand nav, and choose **Azure Active Directory**.
 
 > In the next steps, you might need the tenant name (or directory name) or the tenant ID (or directory ID). These are presented in the **Properties**
-  of the Azure Active Directory window respectively as *Name* and *Directory ID*
+of the Azure Active Directory window respectively as *Name* and *Directory ID*
 
 #### Register the webApp app (App)
 
@@ -98,15 +98,18 @@ Open the config.py file to configure the project
 ### Step 4: Run the sample
 
 Run app.py from shell or command line:
-```
+
+```Shell
 python app.py
 ```
+
 Follow the sign in process to complete the logging.
 
 ## About the code
 
 The code acquiring a token is located in `app.py` file.
 The sample first starts login by redirecting the application from `@app.route("/")`  to  `@app/route("/login")`. It forms an authorization url that goes to the Authorization endpoint here:
+
 ```Python
 authorization_url = TEMPLATE_AUTHZ_URL.format(
         config.TENANT,
@@ -117,19 +120,26 @@ authorization_url = TEMPLATE_AUTHZ_URL.format(
 resp = Response(status=307)
 resp.headers['location']= authorization_url
 return resp
+
 ```
 
 After the user logs in, the authorization code is used acquire a token in `@app.route("/getAToken")`.
 The `AuthenticationContext` is created here:
+
 ```Python
+
 auth_context = AuthenticationContext(AUTHORITY_URL, api_version=None)
 ```
+
 The acquire_token_with_authorization_code() function requests for an access token using the authorization code here:
+
 ```Python
+
 token_response = auth_context.acquire_token_with_authorization_code(code,REDIRECT_URI,config.RESOURCE, config.CLIENT_ID, config.CLIENT_SECRET)
 ```
 
 This token is then used to call the Graph API in `@app.route("/graphcall")`:
+
 ```Python
 graph_data = SESSION.get(endpoint,headers = http_headers, stream=False).json()
 ```
@@ -151,7 +161,8 @@ If you'd like to contribute to this sample, see [CONTRIBUTING.MD](/CONTRIBUTING.
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/). For more information, see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
 
 ## More information
-<!-- 
+
+<!--
 For more information, see ADAL Python's conceptual documentation:
 
 > Provide links to the flows from the conceptual documentation
@@ -159,5 +170,4 @@ For more information, see ADAL Python's conceptual documentation:
 - [Recommended pattern to acquire a token](https://github.com/AzureAD/azure-activedirectory-library-for-dotnet/wiki/AcquireTokenSilentAsync-using-a-cached-token#recommended-pattern-to-acquire-a-token)
 - [Acquiring tokens interactively in public client applications](https://github.com/AzureAD/azure-activedirectory-library-for-dotnet/wiki/Acquiring-tokens-interactively---Public-client-application-flows)
 -->
-
 For more information about how OAuth 2.0 protocols work in this scenario and other scenarios, see [Authentication Scenarios for Azure AD](http://go.microsoft.com/fwlink/?LinkId=394414).
