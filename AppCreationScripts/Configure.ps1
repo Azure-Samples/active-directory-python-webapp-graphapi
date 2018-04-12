@@ -175,16 +175,16 @@ Function ConfigureApplications
     $tenantName =  ($tenant.VerifiedDomains | Where { $_._Default -eq $True }).Name
 
    # Create the webApp AAD application
-   Write-Host "Creating the AAD appplication (App)"
+   Write-Host "Creating the AAD appplication (PythonWebApp)"
    # Get a 2 years application key for the webApp Application
    $pw = ComputePassword
    $fromDate = [DateTime]::Now;
    $key = CreateAppKey -fromDate $fromDate -durationInYears 2 -pw $pw
    $webAppAppKey = $pw
-   $webAppAadApplication = New-AzureADApplication -DisplayName "App" `
+   $webAppAadApplication = New-AzureADApplication -DisplayName "PythonWebApp" `
                                                   -HomePage "http://localhost:5000/" `
                                                   -ReplyUrls "http://localhost:5000/getAToken" `
-                                                  -IdentifierUris "https://$tenantName/App" `
+                                                  -IdentifierUris "https://$tenantName/PythonWebApp" `
                                                   -PasswordCredentials $key `
                                                   -PublicClient $False
 
@@ -195,7 +195,7 @@ Function ConfigureApplications
 
    # URL of the AAD application in the Azure portal
    $webAppPortalUrl = "https://portal.azure.com/#@"+$tenantName+"/blade/Microsoft_AAD_IAM/ApplicationBlade/appId/"+$webAppAadApplication.AppId+"/objectId/"+$webAppAadApplication.ObjectId
-   Add-Content -Value "<tr><td>webApp</td><td>$currentAppId</td><td><a href='$webAppPortalUrl'>App</a></td></tr>" -Path createdApps.html
+   Add-Content -Value "<tr><td>webApp</td><td>$currentAppId</td><td><a href='$webAppPortalUrl'>PythonWebApp</a></td></tr>" -Path createdApps.html
 
    $requiredResourcesAccess = New-Object System.Collections.Generic.List[Microsoft.Open.AzureAD.Model.RequiredResourceAccess]
    # Add Required Resources Access (from 'webApp' to 'Microsoft Graph')
@@ -206,7 +206,7 @@ Function ConfigureApplications
    Set-AzureADApplication -ObjectId $webAppAadApplication.ObjectId -RequiredResourceAccess $requiredResourcesAccess
    Write-Host "Granted."
 
-   # Update config file for 'app'
+   # Update config file for 'webApp'
    $configFile = $pwd.Path + "\..\config.py"
    Write-Host "Updating the sample code ($configFile)"
    $dictionary = @{ "TENANT" = $tenantName;"CLIENT_SECRET" = $webAppAppKey;"CLIENT_ID" = $webAppAadApplication.AppId };

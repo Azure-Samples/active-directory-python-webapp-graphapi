@@ -12,7 +12,7 @@
 
     "Level": 200,
 
-    "Client": "Python Web App",
+    "Client": "PythonWebApp",
 
     "Service": "Microsoft Graph"
 
@@ -24,7 +24,7 @@
 
       "Id": "webApp",
 
-      "Name": "App",
+      "Name": "PythonWebApp",
 
       "IsPublicClient": false,
 
@@ -90,7 +90,7 @@
 
     {
 
-      "App": "app",
+      "App": "webApp",
 
       "SettingKind": "Text",
 

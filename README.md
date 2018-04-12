@@ -62,10 +62,10 @@ As a first step you'll need to:
 > In the next steps, you might need the tenant name (or directory name) or the tenant ID (or directory ID). These are presented in the **Properties**
 of the Azure Active Directory window respectively as *Name* and *Directory ID*
 
-#### Register the webApp app (App)
+#### Register the webApp app (PythonWebApp)
 
 1. In the  **Azure Active Directory** pane, click on **App registrations** and choose **New application registration**.
-1. Enter a friendly name for the application, for example 'App' and select 'Web app / API' as the *Application Type*.
+1. Enter a friendly name for the application, for example 'PythonWebApp' and select 'Web app / API' as the *Application Type*.
 1. For the *sign-on URL*, enter the base URL for the sample, which is by default `http://localhost:5000/`.
 1. Click on **Create** to create the application.
 1. In the succeeding page, Find the *Application ID* value and copy it to the clipboard. You'll need it to configure the config.py file for this project.
@@ -93,7 +93,7 @@ Open the config.py file to configure the project
 1. Open the `config.py` file
 1. Find the app key `TENANT` and replace the existing value with your AAD tenant name.
 1. Find the app key `CLIENT_SECRET` and replace the existing value with the key you saved during the creation of the `App` app, in the Azure portal.
-1. Find the app key `CLIENT_ID` and replace the existing value with the application ID (clientId) of the `App` application copied from the Azure portal.
+1. Find the app key `CLIENT_ID` and replace the existing value with the application ID (clientId) of the `PythonWebApp` application copied from the Azure portal.
 
 ### Step 4: Run the sample
 
