@@ -10,7 +10,7 @@ These scripts are:
 
 - `Configure.ps1` which:
   - creates Azure AD applications and their related objects (permissions, dependencies, secrets),
-  - changes the configuration files in the C# and JavaScript projects.
+  - changes the configuration files in the Python project.
   - creates a summary file named `createdApps.html` in the folder from which you ran the script, and containing, for each Azure AD application it created:
     - the identifier of the application
     - the AppId of the application
