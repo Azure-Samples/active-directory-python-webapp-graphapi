@@ -92,7 +92,7 @@ Open the config.py file to configure the project
 
 1. Open the `config.py` file
 1. Find the app key `TENANT` and replace the existing value with your AAD tenant name.
-1. Find the app key `CLIENT_SECRET` and replace the existing value with the key you saved during the creation of the `App` app, in the Azure portal.
+1. Find the app key `CLIENT_SECRET` and replace the existing value with the key you saved during the creation of the `PythonWebApp` app, in the Azure portal.
 1. Find the app key `CLIENT_ID` and replace the existing value with the application ID (clientId) of the `PythonWebApp` application copied from the Azure portal.
 
 ### Step 4: Run the sample
