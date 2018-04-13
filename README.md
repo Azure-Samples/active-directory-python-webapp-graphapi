@@ -7,7 +7,7 @@ client: Python Web App
 service: Microsoft Graph
 endpoint: AAD V1
 ---
-# Calling Microsoft Graph from a Web App using ADAL Python
+# Calling Microsoft Graph from a web app using ADAL Python
 
 <!--![Build badge](https://travis-ci.org/AzureAD/azure-activedirectory-library-for-python/builds/358958147?utm_source=github_status&utm_medium=notification#)-->
 
@@ -15,10 +15,10 @@ endpoint: AAD V1
 
 ### Overview
 
-This sample demonstrates a Python Web Application calling Microsoft Graph that is secured using Azure Active Directory.
+This sample demonstrates how to build a Python (Flask) web application that authorizes Azure Active Directory users and access data from the Microsoft Graph.
 
-1. The Python Web App uses the Active Directory Authentication Library (ADAL) to obtain a JWT access token from Azure Active Directory (Azure AD):
-2. The access token is used as a bearer token to authenticate the user when calling the Microsoft Graph.
+1. The app uses the Active Directory Authentication Library (ADAL) to acquire a JWT access token for the Microsoft Graph.  
+2. The app then uses the access token to get data about the user from the Microsoft Graph. 
 
 ![Overview](./ReadmeFiles/topology.png)
 
@@ -26,21 +26,20 @@ This sample demonstrates a Python Web Application calling Microsoft Graph that i
 
 To run this sample, you'll need:
 
-- Python 2.7 or above
-- Python Flask
-- An Internet connection
-- An Azure Active Directory (Azure AD) tenant. For more information on how to get an Azure AD tenant, see [How to get an Azure AD tenant](https://azure.microsoft.com/en-us/documentation/articles/active-directory-howto-tenant/)
-- A user account in your Azure AD tenant. This sample will not work with a Microsoft account (formerly Windows Live account). Therefore, if you signed in to the [Azure portal](https://portal.azure.com) with a Microsoft account and have never created a user account in your directory before, you need to do that now.
+- [Python 2.7](https://www.python.org/downloads/release/python-2713/) or above
+- [Flask](http://flask.pocoo.org/)
+- [An Azure AD tenant](https://azure.microsoft.com/en-us/documentation/articles/active-directory-howto-tenant/)
+- [An Azure AD user](https://docs.microsoft.com/en-us/azure/active-directory/add-users-azure-active-directory). Note: this sample does not support Microsoft accounts. 
 
-### Step 1:  Clone or download this repository
+### Step 1.  Clone or download this repository
 
 From your shell or command line:
 
 `git clone https://github.com/Azure-Samples/active-directory-python-webapp-graphapi`
 
-> Given that the name of the sample is pretty long, you might want to clone it in a folder close to the root of your hard drive, to avoid file size limitations on Windows.
+> To avoid file name length limitations in Windows, clone the repo close to your root directory.
 
-### Step 2:  Register the sample with your Azure Active Directory tenant
+### Step 2.  Register the app 
 
 To register the sample, you can:
 
@@ -51,9 +50,7 @@ To register the sample, you can:
 
 If you want to use this automation, read the instructions in [App Creation Scripts](./AppCreationScripts/AppCreationScripts.md)
 
-#### First step: choose the Azure AD tenant where you want to create your applications
-
-As a first step you'll need to:
+#### Choose your tenant
 
 1. Sign in to the [Azure portal](https://portal.azure.com).
 1. On the top bar, click on your account and under the **Directory** list, choose the Active Directory tenant where you wish to register your application.
@@ -62,13 +59,13 @@ As a first step you'll need to:
 > In the next steps, you might need the tenant name (or directory name) or the tenant ID (or directory ID). These are presented in the **Properties**
 of the Azure Active Directory window respectively as *Name* and *Directory ID*
 
-#### Register the webApp app (PythonWebApp)
+#### Register the app
 
 1. In the  **Azure Active Directory** pane, click on **App registrations** and choose **New application registration**.
 1. Enter a friendly name for the application, for example 'PythonWebApp' and select 'Web app / API' as the *Application Type*.
-1. For the *sign-on URL*, enter the base URL for the sample, which is by default `http://localhost:5000/`.
-1. Click on **Create** to create the application.
-1. In the succeeding page, Find the *Application ID* value and copy it to the clipboard. You'll need it to configure the config.py file for this project.
+1. For the *sign-on URL*, enter the base URL for the sample.  By default, this sample uses `http://localhost:5000/`.
+1. Click **Create** to create the application.
+1. In the succeeding page, Find the *Application ID* value and record it for later. 
 1. Then click on **Settings**, and choose **Properties**.
 1. For the App ID URI, replace the guid in the generated URI 'https://\<your_tenant_name\>/\<guid\>', with the name of your service, for example, 'https://\<your_tenant_name\>/App' (replacing `<your_tenant_name>` with the name of your Azure AD tenant)
 1. From the **Settings** | **Reply URLs** page for your application, update the Reply URL for the application to be `http://localhost:5000/getAToken`
@@ -79,10 +76,10 @@ of the Azure Active Directory window respectively as *Name* and *Directory ID*
    - When you save this page, the key value will be displayed, copy, and save the value in a safe location.
    - You'll need this key later to configure the project. This key value will not be displayed again, nor retrievable by any other means,
      so record it as soon as it is visible from the Azure portal.
-1. Configure Permissions for your application. To that extent, in the Settings menu, choose the 'Required permissions' section and then,
-   click on **Add**, then **Select an API**, and type `Microsoft Graph` in the textbox. Then, click on  **Select Permissions** and select **User.Read**.
+1. Configure Permissions for your application. In the Settings menu, choose the 'Required permissions' section and then,
+   click on **Add**, then **Select an API**, and type `Microsoft Graph` in the textbox. Then, click on  **Select Permissions** and underneath **Delegated Permissions** select **Sign in and read user profile**.
 
-### Step 3:  Configure the sample to use your Azure AD tenant
+### Step 3.  Configure the sample 
 
 In the steps below, ClientID is the same as Application ID or AppId.
 
@@ -92,10 +89,10 @@ Open the config.py file to configure the project
 
 1. Open the `config.py` file
 1. Find the app key `TENANT` and replace the existing value with your AAD tenant name.
-1. Find the app key `CLIENT_SECRET` and replace the existing value with the key you saved during the creation of the `PythonWebApp` app, in the Azure portal.
-1. Find the app key `CLIENT_ID` and replace the existing value with the application ID (clientId) of the `PythonWebApp` application copied from the Azure portal.
+1. Find the app key `CLIENT_SECRET` and replace the existing value with the key you saved during the creation of the `PythonWebApp` app in the Azure portal.
+1. Find the app key `CLIENT_ID` and replace the existing value with the application ID (client ID) of the `PythonWebApp` application from the Azure portal.
 
-### Step 4: Run the sample
+### Step 4. Run the sample
 
 Run app.py from shell or command line:
 
