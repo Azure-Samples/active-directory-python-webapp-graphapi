@@ -26,8 +26,9 @@ This sample demonstrates how to build a Python (Flask) web application that auth
 
 To run this sample, you'll need:
 
-- [Python 2.7](https://www.python.org/downloads/release/python-2713/) or above
+- [Python 2.7+](https://www.python.org/downloads/release/python-2713/) or [Python 3+](https://www.python.org/downloads/release/python-364/)
 - [Flask](http://flask.pocoo.org/)
+- [ADAL Python](https://github.com/AzureAD/azure-activedirectory-library-for-python#install) 
 - [An Azure AD tenant](https://azure.microsoft.com/en-us/documentation/articles/active-directory-howto-tenant/)
 - [An Azure AD user](https://docs.microsoft.com/en-us/azure/active-directory/add-users-azure-active-directory). Note: this sample does not support Microsoft accounts. 
 
@@ -94,18 +95,28 @@ Open the config.py file to configure the project
 
 ### Step 4. Run the sample
 
+- If the environment variable for Flask is already set:
+
 Run app.py from shell or command line:
 
 ```Shell
-python app.py
+$ python app.py
 ```
+- If the environment variable for Flask is not set:
 
+Type the following commands on shell or command line by navigating to the project directory:
+
+```Shell
+$ export FLASK_APP=app.py
+$ export FLASK_DEBUG=1
+$ flask run
+```
 Follow the sign-in process to complete the logging.
 
 ## About the code
 
 The code acquiring a token is located in `app.py` file.
-The sample first starts login by redirecting the application from `@app.route("/")`  to  `@app/route("/login")`. It forms an authorization url that goes to the Authorization endpoint here:
+The sample first starts sign in by redirecting the application from `@app.route("/")`  to  `@app/route("/login")`. It forms an authorization url that goes to the Authorization endpoint here:
 
 ```Python
 authorization_url = TEMPLATE_AUTHZ_URL.format(
