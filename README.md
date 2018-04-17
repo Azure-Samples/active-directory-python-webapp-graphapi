@@ -1,7 +1,7 @@
 ---
 services: active-directory
 platforms: python
-author: abhidnya13
+author: abpati
 level: 200
 client: Python Web App
 service: Microsoft Graph
