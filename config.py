@@ -6,7 +6,3 @@ CLIENT_SECRET = "Your client secret"  # copy the value of key you generated when
 
 # These settings are for the Microsoft Graph API Call
 API_VERSION = 'v1.0'
-SCOPES = ['User.Read']  # Add other scopes/permissions as needed.
-# This scope allows users to sign-in to the app, and allows the app to read the profile of signed-in users.
-# It also allows the app to read basic company information of signed-in users.
-# List of scopes/permissions - https://developer.microsoft.com/en-us/graph/docs/concepts/permissions_reference
