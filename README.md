@@ -96,22 +96,29 @@ Open the config.py file to configure the project
 
 ### Step 4. Run the sample
 
+- You will need to install Flask framework and the ADAL Python library using pip as follows:
+
+  ```Shell
+  $ pip install flask
+  $ pip install adal
+  ```
+  
 - If the environment variable for Flask is already set:
 
-Run app.py from shell or command line:
+  Run app.py from shell or command line:
 
-```Shell
-$ python app.py
-```
+  ```Shell
+  $ python app.py
+  ```
 - If the environment variable for Flask is not set:
 
-Type the following commands on shell or command line by navigating to the project directory:
+  Type the following commands on shell or command line by navigating to the project directory:
 
-```Shell
-$ export FLASK_APP=app.py
-$ export FLASK_DEBUG=1
-$ flask run
-```
+  ```Shell
+  $ export FLASK_APP=app.py
+  $ export FLASK_DEBUG=1
+  $ flask run
+  ```
 Follow the sign-in process to complete the logging.
 
 ## About the code
@@ -129,7 +136,6 @@ authorization_url = TEMPLATE_AUTHZ_URL.format(
 resp = Response(status=307)
 resp.headers['location']= authorization_url
 return resp
-
 ```
 
 After the user logs in, the authorization code is used acquire a token in `@app.route("/getAToken")`.
