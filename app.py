@@ -51,7 +51,7 @@ def main_logic():
     auth_context = AuthenticationContext(AUTHORITY_URL)
     token_response = auth_context.acquire_token_with_authorization_code(code, REDIRECT_URI, config.RESOURCE,
                                                                         config.CLIENT_ID, config.CLIENT_SECRET)
-    # ACTION ITEM: In a production app, you likely want to save these in a persistent database instead.
+    # ACTION ITEM: In a production app, you likely want to save these in a database instead.
     session['access_token'] = token_response['accessToken']
 
     return flask.redirect('/graphcall')
