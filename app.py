@@ -1,13 +1,10 @@
-from adal import AuthenticationContext
-from flask import (Flask, redirect, url_for,
-                   Response, session)
-
+import adal
 import flask
 import uuid
 import requests
 import config
 
-app = Flask(__name__)
+app = flask.Flask(__name__)
 app.debug = True
 app.secret_key = 'development'
 
@@ -22,7 +19,7 @@ TEMPLATE_AUTHZ_URL = ('https://login.microsoftonline.com/{}/oauth2/authorize?' +
 @app.route("/")
 def main():
     login_url = 'http://localhost:{}/login'.format(PORT)
-    resp = Response(status=307)
+    resp = flask.Response(status=307)
     resp.headers['location'] = login_url
     return resp
 
@@ -30,14 +27,14 @@ def main():
 @app.route("/login")
 def login():
     auth_state = str(uuid.uuid4())
-    session['state'] = auth_state
+    flask.session['state'] = auth_state
     authorization_url = TEMPLATE_AUTHZ_URL.format(
         config.TENANT,
         config.CLIENT_ID,
         REDIRECT_URI,
         auth_state,
         config.RESOURCE)
-    resp = Response(status=307)
+    resp = flask.Response(status=307)
     resp.headers['location'] = authorization_url
     return resp
 
@@ -46,23 +43,23 @@ def login():
 def main_logic():
     code = flask.request.args['code']
     state = flask.request.args['state']
-    if state != session['state']:
+    if state != flask.session['state']:
         raise ValueError("State does not match")
-    auth_context = AuthenticationContext(AUTHORITY_URL)
+    auth_context = adal.AuthenticationContext(AUTHORITY_URL)
     token_response = auth_context.acquire_token_with_authorization_code(code, REDIRECT_URI, config.RESOURCE,
                                                                         config.CLIENT_ID, config.CLIENT_SECRET)
-    # ACTION ITEM: In a production app, you likely want to save these in a database instead.
-    session['access_token'] = token_response['accessToken']
+    # It is recommended to save this to a database when using a production app.
+    flask.session['access_token'] = token_response['accessToken']
 
     return flask.redirect('/graphcall')
 
 
 @app.route('/graphcall')
 def graphcall():
-    if 'access_token' not in session:
-        return redirect(url_for('login'))
+    if 'access_token' not in flask.session:
+        return flask.redirect(flask.url_for('login'))
     endpoint = config.RESOURCE + '/' + config.API_VERSION + '/me/'
-    http_headers = {'Authorization': session.get('access_token'),
+    http_headers = {'Authorization': flask.session.get('access_token'),
                     'User-Agent': 'adal-python-sample',
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
