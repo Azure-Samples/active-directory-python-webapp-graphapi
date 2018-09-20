@@ -59,7 +59,7 @@ def graphcall():
     if 'access_token' not in flask.session:
         return flask.redirect(flask.url_for('login'))
     endpoint = config.RESOURCE + '/' + config.API_VERSION + '/me/'
-    http_headers = {'Authorization': flask.session.get('access_token'),
+    http_headers = {'Authorization': 'Bearer ' + flask.session.get('access_token'),
                     'User-Agent': 'adal-python-sample',
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
