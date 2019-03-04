@@ -124,7 +124,7 @@ Follow the sign-in process to complete the logging.
 ## About the code
 
 The code acquiring a token is located in `app.py` file.
-The sample first starts sign in by redirecting the application from `@app.route("/")`  to  `@app/route("/login")`. It forms an authorization url that goes to the Authorization endpoint here:
+The sample first starts sign in by redirecting the application from `@app.route("/")`  to  `@app.route("/login")`. It forms an authorization url that goes to the Authorization endpoint here:
 
 ```Python
 authorization_url = TEMPLATE_AUTHZ_URL.format(
