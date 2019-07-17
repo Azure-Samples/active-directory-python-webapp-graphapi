@@ -82,8 +82,7 @@ The scripts install the required PowerShell module (AzureAD) for the current use
     cd AppCreationScripts
     ```
 6. Run the scripts. See below for the [four options](#four-ways-to-run-the-script) to do that.
-7. Open the Visual Studio solution, and in the solution's context menu, choose **Set Startup Projects**.
-8. select **Start** for the projects
+7. Open the project and run it
 
 You're done. this just works!
 
