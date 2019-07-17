@@ -1,3 +1,10 @@
+[CmdletBinding()]
+param(
+    [PSCredential] $Credential,
+    [Parameter(Mandatory=$False, HelpMessage='Tenant ID (This is a GUID which represents the "Directory ID" of the AzureAD tenant into which you want to create the apps')]
+    [string] $tenantId
+)
+
 <#
  This script creates the Azure AD applications needed for this sample and updates the configuration files
  for the visual Studio projects from the data in the Azure AD applications.
@@ -93,12 +100,12 @@ Function GetRequiredPermissions([string] $applicationDisplayName, [string] $requ
 
 Function UpdateLine([string] $line, [string] $value)
 {
-    $index = $line.IndexOf(':')
-    $delimiter = ','
+    $index = $line.IndexOf('=')
+    $delimiter = ';'
     if ($index -eq -1)
     {
-        $index = $line.IndexOf('=')
-        $delimiter = ';'
+        $index = $line.IndexOf(':')
+        $delimiter = ','
     }
     if ($index -ige 0)
     {
@@ -137,15 +144,7 @@ Function ConfigureApplications
    configuration files in the client and service project  of the visual studio solution (App.Config and Web.Config)
    so that they are consistent with the Applications parameters
 #> 
-    [CmdletBinding()]
-    param(
-        [PSCredential] $Credential,
-        [Parameter(HelpMessage='Tenant ID (This is a GUID which represents the "Directory ID" of the AzureAD tenant into which you want to create the apps')]
-        [string] $tenantId
-    )
 
-   process
-   {
     # $tenantId is the Active Directory Tenant. This is a GUID which represents the "Directory ID" of the AzureAD tenant
     # into which you want to create the apps. Look it up in the Azure portal in the "Properties" of the Azure AD.
 
@@ -171,11 +170,15 @@ Function ConfigureApplications
     {
         $tenantId = $creds.Tenant.Id
     }
+
     $tenant = Get-AzureADTenantDetail
     $tenantName =  ($tenant.VerifiedDomains | Where { $_._Default -eq $True }).Name
 
+    # Get the user running the script
+    $user = Get-AzureADUser -ObjectId $creds.Account.Id
+
    # Create the webApp AAD application
-   Write-Host "Creating the AAD appplication (PythonWebApp)"
+   Write-Host "Creating the AAD application (PythonWebApp)"
    # Get a 2 years application key for the webApp Application
    $pw = ComputePassword
    $fromDate = [DateTime]::Now;
@@ -186,36 +189,54 @@ Function ConfigureApplications
                                                   -ReplyUrls "http://localhost:5000/getAToken" `
                                                   -IdentifierUris "https://$tenantName/PythonWebApp" `
                                                   -PasswordCredentials $key `
+                                                  -Oauth2AllowImplicitFlow $true `
                                                   -PublicClient $False
-
 
    $currentAppId = $webAppAadApplication.AppId
    $webAppServicePrincipal = New-AzureADServicePrincipal -AppId $currentAppId -Tags {WindowsAzureActiveDirectoryIntegratedApp}
-   Write-Host "Done."
+
+   # add the user running the script as an app owner if needed
+   $owner = Get-AzureADApplicationOwner -ObjectId $webAppAadApplication.ObjectId
+   if ($owner -eq $null)
+   { 
+    Add-AzureADApplicationOwner -ObjectId $webAppAadApplication.ObjectId -RefObjectId $user.ObjectId
+    Write-Host "'$($user.UserPrincipalName)' added as an application owner to app '$($webAppServicePrincipal.DisplayName)'"
+   }
+
+   Write-Host "Done creating the webApp application (PythonWebApp)"
 
    # URL of the AAD application in the Azure portal
-   $webAppPortalUrl = "https://portal.azure.com/#@"+$tenantName+"/blade/Microsoft_AAD_IAM/ApplicationBlade/appId/"+$webAppAadApplication.AppId+"/objectId/"+$webAppAadApplication.ObjectId
+   # Future? $webAppPortalUrl = "https://portal.azure.com/#@"+$tenantName+"/blade/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/Overview/appId/"+$webAppAadApplication.AppId+"/objectId/"+$webAppAadApplication.ObjectId+"/isMSAApp/"
+   $webAppPortalUrl = "https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/CallAnAPI/appId/"+$webAppAadApplication.AppId+"/objectId/"+$webAppAadApplication.ObjectId+"/isMSAApp/"
    Add-Content -Value "<tr><td>webApp</td><td>$currentAppId</td><td><a href='$webAppPortalUrl'>PythonWebApp</a></td></tr>" -Path createdApps.html
 
    $requiredResourcesAccess = New-Object System.Collections.Generic.List[Microsoft.Open.AzureAD.Model.RequiredResourceAccess]
+
    # Add Required Resources Access (from 'webApp' to 'Microsoft Graph')
    Write-Host "Getting access from 'webApp' to 'Microsoft Graph'"
    $requiredPermissions = GetRequiredPermissions -applicationDisplayName "Microsoft Graph" `
-                                                 -requiredDelegatedPermissions "User.Read";
+                                                -requiredDelegatedPermissions "User.Read" `
+
    $requiredResourcesAccess.Add($requiredPermissions)
+
+
    Set-AzureADApplication -ObjectId $webAppAadApplication.ObjectId -RequiredResourceAccess $requiredResourcesAccess
-   Write-Host "Granted."
+   Write-Host "Granted permissions."
 
    # Update config file for 'webApp'
    $configFile = $pwd.Path + "\..\config.py"
    Write-Host "Updating the sample code ($configFile)"
    $dictionary = @{ "TENANT" = $tenantName;"CLIENT_SECRET" = $webAppAppKey;"CLIENT_ID" = $webAppAadApplication.AppId };
    UpdateTextFile -configFilePath $configFile -dictionary $dictionary
-   Add-Content -Value "</tbody></table></body></html>" -Path createdApps.html
 
-  }
+   Add-Content -Value "</tbody></table></body></html>" -Path createdApps.html  
 }
 
+# Pre-requisites
+if ((Get-Module -ListAvailable -Name "AzureAD") -eq $null) { 
+    Install-Module "AzureAD" -Scope CurrentUser 
+} 
+Import-Module AzureAD
 
 # Run interactively (will ask you for the tenant ID)
 ConfigureApplications -Credential $Credential -tenantId $TenantId

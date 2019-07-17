@@ -5,7 +5,7 @@ author: abpati
 level: 200
 client: Python Web App
 service: Microsoft Graph
-endpoint: AAD V1
+endpoint: AAD v1.0
 ---
 # Calling Microsoft Graph from a web app using ADAL Python
 
@@ -36,63 +36,84 @@ To run this sample, you'll need:
 
 From your shell or command line:
 
-`git clone https://github.com/Azure-Samples/active-directory-python-webapp-graphapi`
+```Shell
+git clone https://github.com/Azure-Samples/https://github.com/Azure-Samples/active-directory-python-webapp-graphapi.git
+```
 
 > To avoid file name length limitations in Windows, clone the repo close to your root directory.
 
 ### Step 2.  Register the app 
 
-To register the sample, you can:
+There is one project in this sample. To register it, you can:
 
-- either follow the steps in the paragraphs below ([Step 2](#step-2--register-the-sample-with-your-azure-active-directory-tenant) and [Step 3](#step-3--configure-the-sample-to-use-your-azure-ad-tenant))
+- either follow the steps [Step 2: Register the sample with your Azure Active Directory tenant](#step-2-register-the-sample-with-your-azure-active-directory-tenant) and [Step 3:  Configure the sample to use your Azure AD tenant](#choose-the-azure-ad-tenant-where-you-want-to-create-your-applications)
 - or use PowerShell scripts that:
-  - **automatically** create for you the Azure AD applications and related objects (passwords, permissions, dependencies)
+  - **automatically** creates the Azure AD applications and related objects (passwords, permissions, dependencies) for you
   - modify the configuration file of your project.
 
-If you want to use this automation, read the instructions in [App Creation Scripts](./AppCreationScripts/AppCreationScripts.md)
+If you want to use this automation:
+1. On Windows run PowerShell and navigate to the root of the cloned directory
+1. In PowerShell run:
+   ```PowerShell
+   Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process -Force
+   ```
+1. Run the script to create your Azure AD application and configure the code of the sample application accordinly. 
+   ```PowerShell
+   .\AppCreationScripts\Configure.ps1
+   ```
+   > Other ways of running the scripts are described in [App Creation Scripts](./AppCreationScripts/AppCreationScripts.md)
 
-#### Choose your tenant
+#### Choose the Azure AD tenant where you want to create your applications
 
-1. Sign in to the [Azure portal](https://portal.azure.com).
-1. On the top bar, click on your account, and then on **Switch Directory**. 
-1. Once the *Directory + subscription* pane opens, choose the Active Directory tenant where you wish to register your application, from the *Favorites* or *All Directories* list.
-1. Click on **All services** in the left-hand nav, and choose **Azure Active Directory**.
+As a first step you'll need to:
 
-> In the next steps, you might need the tenant name (or directory name) or the tenant ID (or directory ID). These are presented in the **Properties**
-of the Azure Active Directory window respectively as *Name* and *Directory ID*
+1. Sign in to the [Azure portal](https://portal.azure.com) using either a work or school account or a personal Microsoft account.
+1. If your account is present in more than one Azure AD tenant, select your profile at the top right corner in the menu on top of the page, and then **switch directory**.
+   Change your portal session to the desired Azure AD tenant.
 
-#### Register the app
+#### Register the webApp app (PythonWebApp)
 
-1. In the  **Azure Active Directory** pane, click on **App registrations** and choose **New application registration**.
-1. Enter a friendly name for the application, for example 'PythonWebApp' and select 'Web app / API' as the *Application Type*.
-1. For the *sign-on URL*, enter the base URL for the sample.  By default, this sample uses `http://localhost:5000/`.
-1. Click **Create** to create the application.
-1. In the succeeding page, Find the *Application ID* value and record it for later. 
-1. Then click on **Settings**, and choose **Properties**.
-1. For the App ID URI, replace the guid in the generated URI 'https://\<your_tenant_name\>/\<guid\>', with the name of your service, for example, 'https://\<your_tenant_name\>/App' (replacing `<your_tenant_name>` with the name of your Azure AD tenant)
-1. From the **Settings** | **Reply URLs** page for your application, update the Reply URL for the application to be `http://localhost:5000/getAToken`
-1. From the Settings menu, choose **Keys** and add a new entry in the Password section:
+1. Navigate to the Microsoft identity platform for developers [App registrations](https://go.microsoft.com/fwlink/?linkid=2083908) page.
+1. Select **New registration**.
+1. When the **Register an application page** appears, enter your application's registration information:
+   - In the **Name** section, enter a meaningful application name that will be displayed to users of the app, for example `PythonWebApp`.
+   - Leave **Supported account types** on the default setting of **Accounts in this organizational directory only**.
+   - In the Redirect URI (optional) section, select **Web** in the combo-box and enter the following redirect URIs: `http://localhost:5000/getAToken`.
+1. Select **Register** to create the application.
+1. On the app **Overview** page, find the **Application (client) ID** value and record it for later. You'll need it to configure the Visual Studio configuration file for this project.
+<!-- 1. From the app's Overview page, select the **Authentication** section.
+   - In the **Advanced settings** | **Implicit grant** section, check **ID tokens** as this sample requires
+     the [Implicit grant flow](https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-implicit-grant-flow) to be enabled to
+     sign-in the user, and call an API.-->
+6. Select **Save**.
+1. From the **Certificates & secrets** page, in the **Client secrets** section, choose **New client secret**:
 
    - Type a key description (of instance `app secret`),
    - Select a key duration of either **In 1 year**, **In 2 years**, or **Never Expires**.
-   - When you save this page, the key value will be displayed, copy, and save the value in a safe location.
-   - You'll need this key later to configure the project. This key value will not be displayed again, nor retrievable by any other means,
+   - When you press the **Add** button, the key value will be displayed, copy, and save the value in a safe location.
+   - You'll need this key later to configure the project in Visual Studio. This key value will not be displayed again, nor retrievable by any other means,
      so record it as soon as it is visible from the Azure portal.
-1. Configure Permissions for your application. In the Settings menu, choose the 'Required permissions' section and then,
-   click on **Add**, then **Select an API**, and type `Microsoft Graph` in the textbox. Then, click on  **Select Permissions** and underneath **Delegated Permissions** select **Sign in and read user profile**.
+1. Select the **API permissions** section
+   - Click the **Add a permission** button and then,
+   - Ensure that the **Microsoft APIs** tab is selected
+   - In the *Commonly used Microsoft APIs* section, click on **Microsoft Graph**
+   - In the **Delegated permissions** section, ensure that the right permissions are checked: **User.Read**. Use the search box if necessary.
+   - Select the **Add permissions** button
 
-### Step 3.  Configure the sample 
+### Step 3:  Configure the sample to use your Azure AD tenant
 
-In the steps below, ClientID is the same as Application ID or AppId.
+In the steps below, "ClientID" is the same as "Application ID" or "AppId".
 
 Open the config.py file to configure the project
 
-#### Configure the app project
+#### Configure the webApp project
+
+> Note: if you used the setup scripts, the changes below will have been applied for you
 
 1. Open the `config.py` file
-1. Find the app key `TENANT` and replace the existing value with your AAD tenant name.
-1. Find the app key `CLIENT_SECRET` and replace the existing value with the key you saved during the creation of the `PythonWebApp` app in the Azure portal.
-1. Find the app key `CLIENT_ID` and replace the existing value with the application ID (client ID) of the `PythonWebApp` application from the Azure portal.
+1. Find the app key `TENANT` and replace the existing value with your Azure AD tenant name.
+1. Find the app key `CLIENT_SECRET` and replace the existing value with the key you saved during the creation of the `PythonWebApp` app, in the Azure portal.
+1. Find the app key `CLIENT_ID` and replace the existing value with the application ID (clientId) of the `PythonWebApp` application copied from the Azure portal.
 
 ### Step 4. Run the sample
 
@@ -158,6 +179,41 @@ This token is then used to call the Graph API in `@app.route("/graphcall")`:
 ```Python
 graph_data = SESSION.get(endpoint,headers = http_headers, stream=False).json()
 ```
+## How to deploy this sample to Azure
+
+This project has one WebApp / Web API projects. To deploy them to Azure Web Sites, you'll need, for each one, to:
+
+- create an Azure Web Site
+- publish the Web App / Web APIs to the web site, and
+- update its client(s) to call the web site instead of IIS Express.
+
+### Create and publish the `PythonWebApp` to an Azure Web Site
+
+1. Sign in to the [Azure portal](https://portal.azure.com).
+1. Click `Create a resource` in the top left-hand corner, select **Web** --> **Web App**, and give your web site a name, for example, `PythonWebApp-contoso.azurewebsites.net`.
+1. Thereafter select the `Subscription`, `Resource Group`, `App service plan and Location`. `OS` will be **Windows** and `Publish` will be **Code**.
+1. Click `Create` and wait for the App Service to be created.
+1. Once you get the `Deployment succeeded` notification, then click on `Go to resource` to navigate to the newly created App service.
+1. Once the web site is created, locate it it in the **Dashboard** and click it to open **App Services** **Overview** screen.
+
+<!--
+## Review and delete the following two lines if not applicable end ##
+
+1. From the **Overview** tab of the App Service, download the publish profile by clicking the **Get publish profile** link and save it.  Other deployment mechanisms, such as from source control, can also be used.
+1. Switch to Visual Studio and go to the PythonWebApp project.  Right click on the project in the Solution Explorer and select **Publish**.  Click **Import Profile** on the bottom bar, and import the publish profile that you downloaded earlier.
+1. Click on **Configure** and in the `Connection tab`, update the Destination URL so that it is a `https` in the home page url, for example [https://PythonWebApp-contoso.azurewebsites.net](https://PythonWebApp-contoso.azurewebsites.net). Click **Next**.
+1. On the Settings tab, make sure `Enable Organizational Authentication` is NOT selected.  Click **Save**. Click on **Publish** on the main screen.
+1. Visual Studio will publish the project and automatically open a browser to the URL of the project.  If you see the default web page of the project, the publication was successful.
+ -->
+
+### Update the Active Directory tenant application registration for `PythonWebApp`
+
+1. Navigate back to to the [Azure portal](https://portal.azure.com).
+In the left-hand navigation pane, select the **Azure Active Directory** service, and then select **App registrations**.
+1. In the resultant screen, select the `PythonWebApp` application.
+1. From the *Branding* menu, update the **Home page URL**, to the address of your service, for example [https://PythonWebApp-contoso.azurewebsites.net](https://PythonWebApp-contoso.azurewebsites.net). Save the configuration.
+1. Add the same URL in the list of values of the *Authentication -> Redirect URIs* menu. If you have multiple redirect urls, make sure that there a new entry using the App service's Uri for each redirect url.
+
 
 ## Community Help and Support
 
@@ -177,12 +233,4 @@ This project has adopted the [Microsoft Open Source Code of Conduct](https://ope
 
 ## More information
 
-<!--
-For more information, see ADAL Python's conceptual documentation:
-
-> Provide links to the flows from the conceptual documentation
-> for instance:
-- [Recommended pattern to acquire a token](https://github.com/AzureAD/azure-activedirectory-library-for-dotnet/wiki/AcquireTokenSilentAsync-using-a-cached-token#recommended-pattern-to-acquire-a-token)
-- [Acquiring tokens interactively in public client applications](https://github.com/AzureAD/azure-activedirectory-library-for-dotnet/wiki/Acquiring-tokens-interactively---Public-client-application-flows)
--->
 For more information about how OAuth 2.0 protocols work in this scenario and other scenarios, see [Authentication Scenarios for Azure AD](http://go.microsoft.com/fwlink/?LinkId=394414).
