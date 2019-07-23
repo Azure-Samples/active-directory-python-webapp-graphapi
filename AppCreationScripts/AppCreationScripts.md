@@ -9,11 +9,11 @@
    ```PowerShell
    Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process -Force
    ```
-1. Run the script to create your Azure AD application and configure the code of the sample application accordinly. (Other ways of running the scripts are described below)
+1. Run the script to create your Azure AD application and configure the code of the sample application accordingly. (Other ways of running the scripts are described below)
    ```PowerShell
    .\AppCreationScripts\Configure.ps1
    ```
-1. Open the Visual Studio solution and click start
+1. Open the solution and click start
 
 ### More details
 
@@ -60,7 +60,7 @@ The `Configure.ps1` will stop if it tries to create an Azure AD application whic
     Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
     ```
 ### (Optionally) install AzureAD PowerShell modules
-The scripts install the required PowerShell module (AzureAD) for the current user if needed. However, if you want to install if for all users on the machine, you can follow the following steps:
+The scripts install the required PowerShell module (AzureAD) for the current user if needed. However, if you want to install it for all users on the machine, you can follow the following steps:
 
 4. If you have never done it already, in the PowerShell window, install the AzureAD PowerShell modules. For this:
 
