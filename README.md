@@ -57,7 +57,7 @@ If you want to use this automation:
    ```PowerShell
    Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process -Force
    ```
-1. Run the script to create your Azure AD application and configure the code of the sample application accordinly. 
+1. Run the script to create your Azure AD application and configure the code of the sample application accordingly. 
    ```PowerShell
    .\AppCreationScripts\Configure.ps1
    ```
@@ -194,7 +194,7 @@ This project has one WebApp / Web API projects. To deploy them to Azure Web Site
 1. Thereafter select the `Subscription`, `Resource Group`, `App service plan and Location`. `OS` will be **Windows** and `Publish` will be **Code**.
 1. Click `Create` and wait for the App Service to be created.
 1. Once you get the `Deployment succeeded` notification, then click on `Go to resource` to navigate to the newly created App service.
-1. Once the web site is created, locate it it in the **Dashboard** and click it to open **App Services** **Overview** screen.
+1. Once the web site is created, locate in the **Dashboard** and click it to open **App Services** **Overview** screen.
 
 <!--
 ## Review and delete the following two lines if not applicable end ##
