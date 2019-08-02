@@ -37,7 +37,7 @@ To run this sample, you'll need:
 From your shell or command line:
 
 ```Shell
-git clone https://github.com/Azure-Samples/https://github.com/Azure-Samples/active-directory-python-webapp-graphapi.git
+git clone https://github.com/Azure-Samples/active-directory-python-webapp-graphapi.git
 ```
 
 > To avoid file name length limitations in Windows, clone the repo close to your root directory.
